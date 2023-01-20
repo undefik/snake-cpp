@@ -1,4 +1,4 @@
-#define SDL_MAIN_HANDLED
+#define SDL_MAIN_HANDLE#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
@@ -82,8 +82,9 @@ void advancebody(){
 }
 
 void drawbody(){
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
 	for(int i = sl - 1; i > 0; i--){
+		// body part 1
+		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x44, 0x00, 0xFF);
 		if(*(sx+i) < 16 && *(sy+i) < 16){
 			if(*(sx+i) == *(sx+i-1)+1 || *(sx+i) == *(sx+i-1)-15){
 				fr = {*(sx+i) * TILE, *(sy+i) * TILE+8, TILE-8, TILE-16 };
@@ -99,6 +100,8 @@ void drawbody(){
 				SDL_RenderFillRect(gRenderer, &fr);
 			}
 		}
+		// body part 2
+		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x88, 0x00, 0xFF);
 		if(*(sx+i) < 16 && *(sy+i) < 16){
 			if(*(sx+i) == *(sx+i+1)+1 || *(sx+i) == *(sx+i+1)-15){
 				fr = {*(sx+i) * TILE, *(sy+i) * TILE+8, TILE-8, TILE-16 };
@@ -115,15 +118,63 @@ void drawbody(){
 			}
 		}
 	}
+	// head
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x44, 0x00, 0xFF);
 	fr = {*sx * TILE+1, *sy * TILE+1, TILE-2, TILE-2};
 	if(*sx < 16 && *sy < 16){
 		SDL_RenderFillRect(gRenderer, &fr);
 	}
+	// eyes
+	if(*(sx) < 16 && *(sy) < 16){
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		if(*(sx) == *(sx+1)+1 || *(sx) == *(sx+1)-15){ // right
+			fr = {(*sx+1) * TILE - 12, (*sy+1) * TILE - 12, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx+1) * TILE - 12, (*sy) * TILE +4, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+			fr = {(*sx+1) * TILE - 10, (*sy+1) * TILE - 10, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx+1) * TILE - 10, (*sy) * TILE +6, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+		}else if(*(sx) == *(sx+1)-1 || *(sx) == *(sx+1)+15){ // left
+			fr = {(*sx) * TILE + 4, (*sy) * TILE + 4, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx) * TILE + 4, (*sy+1) * TILE - 12, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+			fr = {(*sx) * TILE + 6, (*sy) * TILE + 6, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx) * TILE + 6, (*sy+1) * TILE - 10, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+		}else if(*(sy) == *(sy+1)+1 || *(sy) == *(sy+1)-15){ // down
+			fr = {(*sx+1) * TILE - 12, (*sy+1) * TILE - 12, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx) * TILE + 4, (*sy+1) * TILE -12, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+			fr = {(*sx+1) * TILE - 10, (*sy+1) * TILE - 10, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx) * TILE + 6, (*sy+1) * TILE -10, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+		}else if(*(sy) == *(sy+1)-1 || *(sy) == *(sy)+15){ // up
+			fr = {*sx * TILE + 4, *sy * TILE + 4, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx+1) * TILE - 12, *sy * TILE + 4, 8, 8 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+			fr = {*sx * TILE + 6, *sy * TILE + 6, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+			fr = {(*sx+1) * TILE - 10, *sy * TILE + 6, 4, 4 };
+			SDL_RenderFillRect(gRenderer, &fr);
+		}
+	}
+
 
 }
 void drawapple(){
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-	fr = {ax * TILE+1, ay * TILE+1, TILE-2, TILE-2};
+	fr = {ax * TILE+8, ay * TILE+8, TILE-16, TILE-16};
 	SDL_RenderFillRect(gRenderer, &fr);
 }
 bool init(){
@@ -291,6 +342,9 @@ int main(int argc, char* argv[]){
 										dx = 1;
 										dy = 0;
 									}
+									break;
+								case SDLK_q:
+									quit = true;
 									break;
 							}
 						}
