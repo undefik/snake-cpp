@@ -3,4 +3,4 @@ remove:
 	rm -f snake
 
 snake:
-	g++ -lSDL2 -lSDL2_ttf -o snake main.cpp
+	g++ -o snake main.cpp -lSDL2 -lSDL2_ttf
